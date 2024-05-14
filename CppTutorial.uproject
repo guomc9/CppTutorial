@@ -11,6 +11,11 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		}, 
+		{
+			"Name": "CppTutorialEditor", 
+			"Type": "Editor", 
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [
