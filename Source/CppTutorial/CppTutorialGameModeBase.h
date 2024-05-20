@@ -6,7 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/DefaultPawn.h"
 #include "PPawn.h"
-
+#include "PCharacter.h"
 #include "CppTutorialGameModeBase.generated.h"
 
 /**
@@ -22,5 +22,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, NoClear)
-	TSubclassOf<APPawn> CustomPPawnClass = APPawn::StaticClass();
+	TSubclassOf<APCharacter> CustomPCharacterClass = APCharacter::StaticClass();
+	//TSubclassOf<APPawn> CustomPPawnClass = APPawn::StaticClass();
+
 };

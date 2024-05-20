@@ -7,7 +7,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/DefaultPawn.h"
-
+#include "PPawn.h"
+#include "PCharacter.h"
 #include "CollectableActor.generated.h"
 
 UDELEGATE()
@@ -30,13 +31,15 @@ protected:
 	void OnComponentBeginOverlap(class UBoxComponent* Component, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Accl;
+	FVector Accl = {0.0f, 0.0f, 500.0f};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float LiveDuration = 50.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UClass* TriggerClass = ADefaultPawn::StaticClass();
+	UClass* TriggerClass = APCharacter::StaticClass();
+	//UClass* TriggerClass = APPawn::StaticClass();
+
 
 	// Static mesh for rendering
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -48,6 +51,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 	UFUNCTION(BlueprintCallable)
 	void Run();
 

@@ -27,8 +27,12 @@ void ACollectableActor::BeginPlay()
 
 void ACollectableActor::OnComponentBeginOverlap(UBoxComponent* Component, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!IsLaunched && OtherActor->IsA(TriggerClass))
+	//if (OtherActor->IsA(TriggerClass))
+	if (OtherActor->IsA(APCharacter::StaticClass()))
 	{
+		FString Message = FString::Printf(TEXT("Mass: %f. Accl: (%f, %f, %f)"), StaticMesh->GetMass(), Accl.X, Accl.Y, Accl.Z);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, Message);
+
 		RunTrigger.Broadcast(OtherActor, Component);
 	}
 }
@@ -37,25 +41,17 @@ void ACollectableActor::OnComponentBeginOverlap(UBoxComponent* Component, AActor
 void ACollectableActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (IsLaunched)
+	LiveDuration -= DeltaTime;
+	if (LiveDuration <= 0.0f)
 	{
-		LiveDuration -= DeltaTime;
-		if (LiveDuration <= 0.0f)
-		{
-			Destroy();
-		}
+		Destroy();
 	}
 }
 
 void ACollectableActor::Run()
 {
-	if (!IsLaunched)
-	{
-		StaticMesh->AddImpulse(StaticMesh->GetMass() * Accl);
-
-		SetActorTickEnabled(true);
-		IsLaunched = true;
-	}
+	StaticMesh->AddImpulse(StaticMesh->GetMass() * Accl);
+	SetActorTickEnabled(true);
 }
 
 void ACollectableActor::SetAccl(FVector value)

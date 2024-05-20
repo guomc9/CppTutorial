@@ -1,37 +1,40 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PPawn.h"
+#include "PCharacter.h"
 
 // Sets default values
-APPawn::APPawn()
+APCharacter::APCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = true;
+	// Setup component hierarchy
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerMesh"));
-	RootComponent = PlayerMesh;
+	PlayerMesh->SetupAttachment(GetCapsuleComponent());
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
-	PlayerCamera->SetupAttachment(PlayerMesh);
+	PlayerCamera->SetupAttachment(GetCapsuleComponent());
 }
 
 // Called when the game starts or when spawned
-void APPawn::BeginPlay()
+void APCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
 }
 
 // Called every frame
-void APPawn::Tick(float DeltaTime)
+void APCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void APPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 	if (APlayerController* PlayerController = CastChecked<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -46,23 +49,21 @@ void APPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if (Input && FBAction && LRAction && LookAction)
 	{
-		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &APPawn::Look);
-		Input->BindAction(FBAction, ETriggerEvent::Triggered, this, &APPawn::MoveFB);
-		Input->BindAction(LRAction, ETriggerEvent::Triggered, this, &APPawn::MoveLR);
+		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &APCharacter::Look);
+		Input->BindAction(FBAction, ETriggerEvent::Triggered, this, &APCharacter::MoveFB);
+		Input->BindAction(LRAction, ETriggerEvent::Triggered, this, &APCharacter::MoveLR);
 	}
 }
 
-
-void APPawn::Look(const FInputActionInstance& Instance)
+void APCharacter::Look(const FInputActionInstance& Instance)
 {
 	FVector2D Value = Instance.GetValue().Get<FVector2D>();
-	auto Rot = GetActorRotation();
-	Rot.Yaw += Value.X;
-	Rot.Pitch += Value.Y;
-	SetActorRotation(Rot);
+	AddControllerYawInput(Value.X);
+	AddControllerPitchInput(-1.0f * Value.Y);
+
 }
 
-void APPawn::MoveLR(const FInputActionInstance& Instance)
+void APCharacter::MoveLR(const FInputActionInstance& Instance)
 {
 	float Value = Instance.GetValue().Get<float>();
 	FVector Location = GetActorLocation();
@@ -71,7 +72,7 @@ void APPawn::MoveLR(const FInputActionInstance& Instance)
 	SetActorLocation(Location);
 }
 
-void APPawn::MoveFB(const FInputActionInstance& Instance)
+void APCharacter::MoveFB(const FInputActionInstance& Instance)
 {
 	float Value = Instance.GetValue().Get<float>();
 	FVector Location = GetActorLocation();
@@ -79,3 +80,4 @@ void APPawn::MoveFB(const FInputActionInstance& Instance)
 	Location += (Right * Value);
 	SetActorLocation(Location);
 }
+

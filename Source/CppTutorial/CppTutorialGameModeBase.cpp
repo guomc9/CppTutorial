@@ -9,6 +9,6 @@ void ACppTutorialGameModeBase::InitGameState()
 
 	if (DefaultPawnClass == ADefaultPawn::StaticClass() || !DefaultPawnClass)
 	{
-		DefaultPawnClass = CustomPPawnClass;
+		DefaultPawnClass = CustomPCharacterClass;
 	}
 }
