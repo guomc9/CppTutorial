@@ -47,7 +47,7 @@ void ATRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 			}
 		}
 	}
-	UEnhancedInputComponent* Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	Input = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if (Input && FBAction && LRAction && LookAction && TimeReverseAction)
 	{
 		Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATRCharacter::Look);

@@ -53,6 +53,9 @@ public:
 	void BeginTimeReverse(const FInputActionInstance& Instance);
 	void EndTimeReverse(const FInputActionInstance& Instance);
 
+	UPROPERTY(BlueprintReadWrite)
+	UEnhancedInputComponent* Input;
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* PlayerMesh;
@@ -62,4 +65,5 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UReverseTimeComponent* ReverseTime;
+
 };
